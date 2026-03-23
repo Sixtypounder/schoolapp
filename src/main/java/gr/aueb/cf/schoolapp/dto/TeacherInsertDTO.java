@@ -18,7 +18,7 @@ public record TeacherInsertDTO(
         String vat,
 
         @NotNull(message = "Η περιοχή δεν μπορεί να είναι κενή.")
-        Long regionID
+        Long regionId
 
 
 ) {
