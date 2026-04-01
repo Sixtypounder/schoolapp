@@ -56,6 +56,10 @@ public class TeacherService implements ITeacherService {
             log.error("Save failed for teacher with vat={}. Region id={} invalid", dto.vat(), dto.regionId());    //Structures Logging
             throw e;
         }
-
     }
+
+    public boolean isTeacherExists(String vat) {
+        return teacherRepository.findByVat(vat).isPresent();
+    }
+
 }
