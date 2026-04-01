@@ -15,7 +15,8 @@ import java.util.List;
 public class RegionServiceImpl implements IRegionService {
 
     private final RegionRepository regionRepository;
-    private final Mapper mapper;
+    public final Mapper mapper;
+
 
     @Override
     public List<RegionReadOnlyDTO> findAllRegionsSortedByName() {
