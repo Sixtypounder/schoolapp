@@ -78,19 +78,22 @@ public class TeacherController {
         }
     }
 
+    @GetMapping({ "", "/" } )
     public String getPaginatedTeachers(@PageableDefault(page = 0, size = 5, sort = "lastname") Pageable pageable,
                                        Model model){
-        Page<TeacherReadOnlyDTO> teachersPage = new PageImpl<>(Stream.of(
-                new TeacherReadOnlyDTO("ab123", "Pablos", "Pablopoulos", "1234", "Athens"),
-                new TeacherReadOnlyDTO("ab124", "Nikos", "Charos", "1234", "Athens"),
-                new TeacherReadOnlyDTO("ab125", "Kostas", "Poulos", "1234", "Athens"),
-                new TeacherReadOnlyDTO("ab126", "George", "Petrou", "1234", "Athens"),
-                new TeacherReadOnlyDTO("ab127", "Lydia", "Spyropoulou", "1234", "Athens"))
-                .sorted(Comparator.comparing(TeacherReadOnlyDTO::lastname))
-                .skip(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .toList(), pageable, 5
-        );
+        Page<TeacherReadOnlyDTO> teachersPage = teacherService.getPaginatedTeachers(pageable);
+
+//        Page<TeacherReadOnlyDTO> teachersPage = new PageImpl<>(Stream.of(
+//                new TeacherReadOnlyDTO("ab123", "Pablos", "Pablopoulos", "1234", "Athens"),
+//                new TeacherReadOnlyDTO("ab124", "Nikos", "Charos", "1234", "Athens"),
+//                new TeacherReadOnlyDTO("ab125", "Kostas", "Poulos", "1234", "Athens"),
+//                new TeacherReadOnlyDTO("ab126", "George", "Petrou", "1234", "Athens"),
+//                new TeacherReadOnlyDTO("ab127", "Lydia", "Spyropoulou", "1234", "Athens"))
+//                .sorted(Comparator.comparing(TeacherReadOnlyDTO::lastname))
+//                .skip(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .toList(), pageable, 5
+//        );
         model.addAttribute("teachers", teachersPage.getContent());
         model.addAttribute("page", teachersPage);
         return "teachers";
