@@ -10,6 +10,7 @@ import gr.aueb.cf.schoolapp.dto.TeacherInsertDTO;
 import gr.aueb.cf.schoolapp.dto.TeacherReadOnlyDTO;
 import gr.aueb.cf.schoolapp.service.IRegionService;
 import gr.aueb.cf.schoolapp.service.ITeacherService;
+import gr.aueb.cf.schoolapp.validator.TeacheEditValidator;
 import gr.aueb.cf.schoolapp.validator.TeacherInsertValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class TeacherController {
     private final ITeacherService teacherService;
     private final IRegionService regionService;
     private final TeacherInsertValidator teacherInsertValidator;
+    private final TeacheEditValidator teacheEditValidator;
 
 //    @Autowired
 //    public TeacherController(ITeacherService teacherService) {
@@ -114,13 +116,16 @@ public class TeacherController {
     public String updateTeacher(@Valid @ModelAttribute("TeacherEditDTO") TeacherEditDTO teacherEditDTO,
     BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model ) {
 
+
+
+        teacheEditValidator.validate(teacherEditDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             return "teacher-edit";
         }
 
         try {
-            teacherService.updateTeacher(teacherEditDTO);
-            redirectAttributes.addFlashAttribute("teacherReadOnlyDTO", teacherEditDTO);
+            TeacherReadOnlyDTO readOnlyDTO = teacherService.updateTeacher(teacherEditDTO);
+            redirectAttributes.addFlashAttribute("teacherReadOnlyDTO", readOnlyDTO);
             return "redirect:/teachers/update-success";
         } catch (EntityNotFoundException | EntityAlreadyExistsException | EntityInvalidArgumentException e) {
             model.addAttribute("errorMessage", e.getMessage());
