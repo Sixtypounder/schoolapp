@@ -30,4 +30,15 @@ public abstract class AbstractEntity {
     @Column(name = "updated_at", nullable = false, columnDefinition = "DATETIME")
     private Instant updateAt;
 
+    @Column(nullable = false)
+    private boolean deleted;
+
+    @Column(name = "deleted_at", columnDefinition = "DATETIME")
+    private Instant deletedAt;
+
+    public void softDelete() {
+        this.deleted = true;
+        this.deletedAt = Instant.now();
+    }
+
 }
