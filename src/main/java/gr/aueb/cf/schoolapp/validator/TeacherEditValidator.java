@@ -2,7 +2,6 @@ package gr.aueb.cf.schoolapp.validator;
 
 import gr.aueb.cf.schoolapp.core.exceptions.EntityNotFoundException;
 import gr.aueb.cf.schoolapp.dto.TeacherEditDTO;
-import gr.aueb.cf.schoolapp.dto.TeacherInsertDTO;
 import gr.aueb.cf.schoolapp.service.ITeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,13 +12,13 @@ import org.springframework.validation.Validator;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class TeacheEditValidator implements Validator {
+public class TeacherEditValidator implements Validator {
 
     private final ITeacherService teacherService;
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return TeacheEditValidator.class == clazz;
+        return TeacherEditValidator.class == clazz;
 
     }
 

@@ -10,13 +10,11 @@ import gr.aueb.cf.schoolapp.dto.TeacherInsertDTO;
 import gr.aueb.cf.schoolapp.dto.TeacherReadOnlyDTO;
 import gr.aueb.cf.schoolapp.service.IRegionService;
 import gr.aueb.cf.schoolapp.service.ITeacherService;
-import gr.aueb.cf.schoolapp.validator.TeacheEditValidator;
+import gr.aueb.cf.schoolapp.validator.TeacherEditValidator;
 import gr.aueb.cf.schoolapp.validator.TeacherInsertValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -25,10 +23,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,7 +34,7 @@ public class TeacherController {
     private final ITeacherService teacherService;
     private final IRegionService regionService;
     private final TeacherInsertValidator teacherInsertValidator;
-    private final TeacheEditValidator teacheEditValidator;
+    private final TeacherEditValidator teacherEditValidator;
 
 //    @Autowired
 //    public TeacherController(ITeacherService teacherService) {
@@ -83,8 +79,8 @@ public class TeacherController {
     @GetMapping({ "", "/" } )
     public String getPaginatedTeachers(@PageableDefault(page = 0, size = 5, sort = "lastname") Pageable pageable,
                                        Model model){
-        Page<TeacherReadOnlyDTO> teachersPage = teacherService.getPaginatedTeachers(pageable);
-
+//        Page<TeacherReadOnlyDTO> teachersPage = teacherService.getPaginatedTeachers(pageable);
+        Page<TeacherReadOnlyDTO> teachersPage = teacherService.getPaginatedTeachersDeletedFalse(pageable);
 //        Page<TeacherReadOnlyDTO> teachersPage = new PageImpl<>(Stream.of(
 //                new TeacherReadOnlyDTO("ab123", "Pablos", "Pablopoulos", "1234", "Athens"),
 //                new TeacherReadOnlyDTO("ab124", "Nikos", "Charos", "1234", "Athens"),
@@ -105,7 +101,7 @@ public class TeacherController {
     public String getTeacherEdit(@PathVariable UUID uuid, Model model) {
         try {
             TeacherEditDTO teacherEditDTO = teacherService.getTeacherByUUID(uuid);
-            model.addAttribute("TeacherEditDTO", teacherEditDTO);
+            model.addAttribute("teacherEditDTO", teacherEditDTO);
         } catch (EntityNotFoundException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -113,12 +109,13 @@ public class TeacherController {
     }
 
     @PostMapping("/edit")
-    public String updateTeacher(@Valid @ModelAttribute("TeacherEditDTO") TeacherEditDTO teacherEditDTO,
+    public String updateTeacher(@Valid @ModelAttribute("teacherEditDTO") TeacherEditDTO teacherEditDTO,
     BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model ) {
 
 
 
-        teacheEditValidator.validate(teacherEditDTO, bindingResult);
+
+        teacherEditValidator.validate(teacherEditDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             return "teacher-edit";
         }
@@ -139,7 +136,24 @@ public class TeacherController {
         return "update-teacher-success";
     }
 
+    @PostMapping("/delete/{uuid}")
+    public String deleteTeacher(@PathVariable UUID uuid, Model model,
+                                RedirectAttributes redirectAttributes) {
 
+        try {
+            TeacherReadOnlyDTO readOnlyDTO = teacherService.deleteTeacherByUUID(uuid);
+            redirectAttributes.addFlashAttribute("teacherReadOnlyDTO", readOnlyDTO);
+            return "redirect:/teachers/delete-success";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "teachers";
+        }
+    }
+
+    @GetMapping("/delete-success")
+    public String deleteSuccess() {
+        return "delete-teacher-success";
+    }
 
 
 
