@@ -71,4 +71,18 @@ public class User extends AbstractEntity implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof  User user)) return false;
+
+        return Objects.equals(getUsername(), user.getUsername());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(username);
+    }
 }
