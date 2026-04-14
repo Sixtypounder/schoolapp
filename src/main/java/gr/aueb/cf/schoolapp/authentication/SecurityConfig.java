@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")   //δουλεύει με post logout
                         .invalidateHttpSession(true)
-                        .deleteCookies("J SESSIONID")
+                        .deleteCookies("JSESSIONID")
                 );
         return http.build();
     }
