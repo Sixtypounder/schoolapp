@@ -49,6 +49,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 //        }
 
         redirectStrategy.sendRedirect(request, response, "/teachers");
+        return;
 
     }
 }
